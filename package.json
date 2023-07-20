@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "rm -rf dist/ && tsc --project . && node dist/app.js",
-    "dev": "NODE_ENV=local nodemon .",
+    "dev": "NODE_ENV=local nodemon --watch .",
     "debug": "nodemon --inspect ."
   },
   "author": "",
@@ -16,7 +16,7 @@
     "@types/helmet": "^4.0.0",
     "@types/morgan": "^1.9.4",
     "body-parser": "^1.20.2",
-    "csurf": "^1.11.0",
+    "csrf": "^3.1.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "helmet": "^7.0.0",
