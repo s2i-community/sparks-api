@@ -1,12 +1,11 @@
 import express, { Application } from "express";
-import { startServer } from "./services/startServer";
 import dotenv from "dotenv";
-import { connectDB } from "./services/db/connection";
-import { apiRouter } from "./routes";
-import { csrfMiddleware, morganMiddleware } from "./middlewares";
-import { errorHandler } from "./middlewares";
-import { checkMissingEnvironmentVars, log } from "./utils";
 import helmet from "helmet";
+import { checkMissingEnvironmentVars, log } from "./utils";
+import { errorHandler, morganMiddleware } from "./middlewares";
+import { router } from "./routes";
+import { connectDB } from "./database/services";
+import { startServer } from "./services";
 
 dotenv.config({ path: `.env.${process.env['NODE_ENV']}` });
 
@@ -32,8 +31,6 @@ const mongoDbURI = process.env["MONGO_URI"]!;
 /** The Express application instance. */
 const app: Application = express();
 
-
-
 // HTTP request logger middleware
 app.use(morganMiddleware);
 
@@ -43,18 +40,21 @@ app.use(helmet.xPoweredBy());
 
 app.use(express.json());
 
+// parse application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: false }));
+
 // Enable Cross-Site Request Forgery (CSRF) protection.
 // CSRF attacks can allow attackers to perform actions on behalf of authenticated users
 // This middleware adds a csrfToken() method to the request object.
 // This token is used to validate the request body when making POST requests.
-app
-  .post("*", csrfMiddleware)
-  .put("*", csrfMiddleware)
-  .patch("*", csrfMiddleware)
-  .delete("*", csrfMiddleware);
+// app
+//   .post("*", csrfMiddleware)
+//   .put("*", csrfMiddleware)
+//   .patch("*", csrfMiddleware)
+//   .delete("*", csrfMiddleware);
 
-// load v1 api router
-app.use("/api", apiRouter);
+// load router
+app.use('/', router);
 
 // error handler middleware
 app.use(errorHandler);

@@ -1,6 +1,6 @@
 import express from "express";
-import { apiRouter_v1 } from "./v1";
+import { apiRouter } from "./api";
 
-export const apiRouter = express.Router();
+export const router = express.Router();
 
-apiRouter.use("/v1", apiRouter_v1);
+router.use("/api", apiRouter);

@@ -1,13 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import { ErrorRequestHandler } from "express";
 import { errorToRestStatus, formatErrorResponse } from "../utils/errors";
 import { log } from "../utils/logger";
 
-export async function errorHandler(
-  err: any,
-  req: Request<{}, {}, {}>,
-  res: Response,
-  next: NextFunction
-) {
+export const errorHandler: ErrorRequestHandler = async function (err, req, res, next) {
   const { user } = res.locals;
   const sessionId = user?._id ? user._id.toString() : undefined;
 
@@ -17,7 +12,7 @@ export async function errorHandler(
   const message: string =
     status !== 500 ? err.message : "Internal server error";
 
-  return res
+  res
     .status(status)
-    .json(formatErrorResponse(status, message, err.details));
+    .json(formatErrorResponse(message, err.details));
 }

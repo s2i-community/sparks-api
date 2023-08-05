@@ -25,6 +25,7 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedParameters": false,
     "strictFunctionTypes": true,
+    "sourceMap": true
   },
   "include": [
     "src/**/*.ts"
@@ -32,9 +33,4 @@
   "exclude": [
     "./dist"
   ],
-  "paths": {
-    "@controller": [
-      "./controllers/*"
-    ]
-  },
 }

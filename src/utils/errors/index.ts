@@ -45,13 +45,11 @@ export function errorToRestStatus(error: Error): number {
  * @returns An error response object with the given response code, message, and optional details.
  */
 export function formatErrorResponse(
-  responseCode: number,
   responseMessage: string,
   details?: unknown
-): { code: number; message: string; details?: unknown } {
+): { message: string; details?: unknown } {
   return {
     ...{
-      code: responseCode,
       message: responseMessage,
     },
     ...(details ? { details } : null),
