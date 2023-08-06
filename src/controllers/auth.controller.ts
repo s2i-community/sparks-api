@@ -2,8 +2,8 @@ import { RequestHandler } from "express";
 import { IAuthInputDTO, IAuthResetPasswordInputDTO } from "../@types/auth";
 import { AuthService } from "../services";
 import { AuthenticationError } from "../utils/errors";
-import { IUserInputDTO } from "../@types/user";
 import { IUserDocument } from "../database/models";
+import { IDefaultResponseBody } from "../@types/utils";
 
 /**
  * Signs in a user with the provided authentication input data and generates a JWT token for them.
@@ -16,11 +16,11 @@ import { IUserDocument } from "../database/models";
  * @throws {Error} If an error occurs while signing in the user or generating the JWT token.
  * @returns A Promise that resolves when the user is signed in and the JWT token is generated.
  */
-export const signIn: RequestHandler<{}, {}, IAuthInputDTO> = async function (req, res, next) {
+export const signIn: RequestHandler<{}, IDefaultResponseBody, IAuthInputDTO> = async function (req, res, next) {
   try {
     const { body: authInputDTO } = req;
     const user = await AuthService.signIn(authInputDTO);
-    const jwtToken = await AuthService.generateJwtToken(user);
+    const jwtToken = await AuthService.generateJWT(user);
 
     res.status(200);
     res.cookie('jwt', jwtToken, {
@@ -45,43 +45,12 @@ export const signIn: RequestHandler<{}, {}, IAuthInputDTO> = async function (req
  * @param res - The response object.
  * @returns A Promise that resolves with the user document.
  */
-export const signOut: RequestHandler = async function (req, res, next) {
+export const signOut: RequestHandler<{}, IDefaultResponseBody> = async function (req, res, next) {
   try {
     res.clearCookie('jwt');
     res.status(200).json({ message: 'Successfully logged out' });
   } catch (err) {
     next(err);
-  }
-}
-
-
-/**
- * Handles the user sign up request.
- * @param req - The request object.
- * @param res - The response object.
- * @param next - The next middleware function.
- * @returns The newly created user object and a JWT token in a cookie.
- * @throws {AuthenticationError} If the user authentication fails.
- */
-export const signUp: RequestHandler<{}, {}, IUserInputDTO> = async function (req, res, next) {
-  try {
-    const { body: userInputDTO } = req;
-    const user = await AuthService.signUp(userInputDTO);
-    const jwtToken = await AuthService.generateJwtToken(user);
-
-    res.status(200);
-    res.cookie('jwt', jwtToken, {
-      httpOnly: true,
-      secure: process.env['NODE_ENV'] === 'production',
-      maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
-    });
-    res.json({ message: 'Successfully signed up' });
-  } catch (err: any) {
-    if (err instanceof AuthenticationError) {
-      res.status(401).end();
-    } else {
-      next(err);
-    }
   }
 }
 
@@ -95,10 +64,10 @@ export const signUp: RequestHandler<{}, {}, IUserInputDTO> = async function (req
  * @param {NextFunction} next - The Express next function.
  * @returns {Promise<void>} - A Promise that resolves when the JWT token has been refreshed.
  */
-export const refreshJwtToken: RequestHandler<{}, {}, {}, {}, { user: IUserDocument }> = async function (req, res, next) {
+export const refreshJwtToken: RequestHandler<{}, IDefaultResponseBody, {}, {}, { user: IUserDocument }> = async function (req, res, next) {
   try {
     const { user } = res.locals;
-    const jwtToken = await AuthService.refreshJwtToken(user);
+    const jwtToken = await AuthService.refreshJWT(user);
 
     res.status(200);
     res.cookie('jwt', jwtToken, {
@@ -121,7 +90,7 @@ export const refreshJwtToken: RequestHandler<{}, {}, {}, {}, { user: IUserDocume
  * @param next - The next middleware function.
  * @returns A JSON response indicating whether the password was successfully reset.
  */
-export const resetPassword: RequestHandler<{}, {}, IAuthResetPasswordInputDTO, {}, {user: IUserDocument}> = async function (req, res, next) {
+export const resetPassword: RequestHandler<{}, IDefaultResponseBody, IAuthResetPasswordInputDTO, {}, {user: IUserDocument}> = async function (req, res, next) {
   try {
     const { currentPassword, newPassword, passwordResetToken } = req.body;
     await AuthService.resetPassword(currentPassword, newPassword, passwordResetToken);

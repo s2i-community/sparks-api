@@ -2,11 +2,13 @@ import express, { Application } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import swaggerUi from 'swagger-ui-express';
 import { checkMissingEnvironmentVars, log } from "./utils";
 import { errorHandler, morganMiddleware } from "./middlewares";
 import { router } from "./routes";
 import { connectDB } from "./database/services";
 import { startServer } from "./services";
+import { swaggerSpecs } from "./utils/swagger";
 
 dotenv.config({ path: `.env.${process.env['NODE_ENV']}` });
 
@@ -58,6 +60,8 @@ app.use(cookieParser());
 
 // load router
 app.use('/', router);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // error handler middleware
 app.use(errorHandler);

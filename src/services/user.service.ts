@@ -1,5 +1,7 @@
 import { IUserDocument, UserModel } from '../database/models/user/user.model';
 import { IUser, IUserInputDTO, IUserQueryOptions, IUserUpdateDTO } from '../@types/user';
+import mongoose from 'mongoose';
+import { DatabaseError, ValidationError } from '../utils/errors';
 
 /**
  * Creates a new user.
@@ -17,8 +19,18 @@ import { IUser, IUserInputDTO, IUserQueryOptions, IUserUpdateDTO } from '../@typ
  * user.save();
  */
 export async function createUser(userInput: IUserInputDTO): Promise<IUserDocument> {
-  const user = new UserModel(userInput);
-  return await user.save({ validateBeforeSave: true });
+  try {
+    const user = new UserModel(userInput);
+    return await user.save({ validateBeforeSave: true });
+  } catch (err) {
+    if(err instanceof mongoose.Error.ValidationError) {
+      throw new ValidationError(err.message);
+    }
+    if (err instanceof mongoose.Error) {
+      throw new DatabaseError(err.message);
+    }
+    throw err;
+  }
 }
 
 
@@ -120,7 +132,7 @@ export async function findUser(userId: IUser['_id'], options?: IUserQueryOptions
  * user.save();
  */
 export async function updateUser(userId: IUser['_id'], userInput: IUserUpdateDTO, options?: IUserQueryOptions): Promise<IUserDocument | null> {
-  const query = UserModel.findByIdAndUpdate(userId, userInput, { new: true });
+  const query = UserModel.findByIdAndUpdate(userId, userInput, { new: true, runValidators: true });
 
   if (options) {
     if (options.select) {

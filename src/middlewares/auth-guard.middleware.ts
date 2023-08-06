@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { UserService } from "../services";
 import { IAuthJWT } from "../@types/auth";
+import { IDefaultResponseBody } from "../@types/utils";
 
 /**
  * Middleware that checks if the request has a valid JWT token in the Authorization header.
@@ -11,7 +12,7 @@ import { IAuthJWT } from "../@types/auth";
  * @param res - Express response object
  * @param next - Express next function
  */
-export const authGuard: RequestHandler = async (req, res, next) => {
+export const authGuard: RequestHandler<{}, IDefaultResponseBody> = async (req, res, next) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
 
   if (!token) {

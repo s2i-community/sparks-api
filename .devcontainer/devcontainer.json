@@ -60,7 +60,7 @@
 		}
 	},
 
-	"remoteEnv": { "NODE_ENV": "local" },
+	"remoteEnv": { "NODE_ENV": "local", "BASE_URL": "localhost" },
 	
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {

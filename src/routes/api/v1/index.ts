@@ -1,5 +1,4 @@
 import express from "express";
-import { authGuard } from "../../../middlewares";
 import { usersRouter } from "./users.routes";
 import { authRouter } from "./auth.routes";
 import { NotFoundError } from "../../../utils/errors";
@@ -12,7 +11,7 @@ v1Router.use("/auth", authRouter);
 
 
 // User routes
-v1Router.use("/users", authGuard, usersRouter);
+v1Router.use("/users", usersRouter);
 
 
 // Catch all other routes

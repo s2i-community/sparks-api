@@ -52,7 +52,7 @@ export const signUp = async (userInputDTO: IUserInputDTO): Promise<IUserDocument
  * @returns A Promise that resolves with the generated JWT token.
  * @throws If there was an error generating the token.
  */
-export const generateJwtToken = async (user: IUserDocument): Promise<string> => {
+export const generateJWT = async (user: IUserDocument): Promise<string> => {
   const token = await user.generateJWT();
   return token;
 }
@@ -63,13 +63,13 @@ export const generateJwtToken = async (user: IUserDocument): Promise<string> => 
  * @param user - The user document for which to generate a new JWT token.
  * @returns A Promise that resolves to the new JWT token.
  */
-export const refreshJwtToken = async (user: IUserDocument): Promise<string> => {
+export const refreshJWT = async (user: IUserDocument): Promise<string> => {
   const token = await user.refreshJWT();
   return token;
 }
 
 
-export const validateJwtToken = async (token: string): Promise<IUserDocument> => {
+export const validateJWT = async (token: string): Promise<IUserDocument> => {
   const user = await UserModel.verifyJWT(token);
   return user;
 }
