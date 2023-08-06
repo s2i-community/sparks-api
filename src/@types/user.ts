@@ -9,6 +9,7 @@ export interface IUser {
   username: string;
   firstName: string;
   lastName: string;
+  profilePicture?: Buffer | undefined;
   email: string;
   password?: string;
   passwordResetToken?: string | undefined;

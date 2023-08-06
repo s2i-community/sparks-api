@@ -157,6 +157,10 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
+  profilePicture: {
+    type: Buffer,
+    default: null,
+  },
   email: {
     type: String,
     required: true,
