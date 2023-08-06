@@ -5,19 +5,19 @@ import { IUserDocument } from "../database/models";
  * Represents a user in the system.
  */
 export interface IUser {
-  id: string;
+  _id: string;
   username: string;
   firstName: string;
   lastName: string;
   email: string;
   password?: string;
+  passwordResetToken?: string | undefined;
+  passwordResetTokenExpiresAt?: Date | undefined;
+  emailVerificationToken?: string | undefined;
+  emailVerified?: boolean;
+  emailVerificationTokenExpiresAt?: Date | undefined;
   createdAt: Date;
   updatedAt: Date;
-  passwordResetToken?: string;
-  passwordResetTokenExpiresAt?: Date;
-  emailVerificationToken?: string;
-  emailVerified?: boolean;
-  emailVerificationTokenExpiresAt?: Date;
   deletedAt?: string;
 }
 

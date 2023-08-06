@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { UserService } from "../services";
-import { IUser, IUserInputDTO, IUserQueryOptions, IUserUpdateDTO } from "../@types/user.type";
+import { IUser, IUserInputDTO, IUserQueryOptions, IUserUpdateDTO } from "../@types/user";
 import { IUserDocument } from "../database/models";
 
 
@@ -11,7 +11,8 @@ import { IUserDocument } from "../database/models";
  */
 export const getUsers: RequestHandler<{}, IUserDocument[], {}, IUserQueryOptions> = async (req, res, next): Promise<void> => {
   try {
-    const users = await UserService.findUsers(req.query);
+    const { query: options } = req;
+    const users = await UserService.findUsers(options);
     res.status(200).json(users);
   } catch (err) {
     next(err);
@@ -24,9 +25,11 @@ export const getUsers: RequestHandler<{}, IUserDocument[], {}, IUserQueryOptions
  * @param req - The request object.
  * @param res - The response object.
  */
-export const getUser: RequestHandler<{ id: IUser['id'] }, IUserDocument | null, {}, IUserQueryOptions> = async (req, res, next): Promise<void> => {
+export const getUser: RequestHandler<{ id: IUser['_id'] }, IUserDocument | null, {}, IUserQueryOptions> = async (req, res, next): Promise<void> => {
   try {
-    const user = await UserService.findUser(req.params?.id, req.query);
+    const { id: userId } = req.params;
+    const { query: options } = req;
+    const user = await UserService.findUser(userId, options);
     res.status(200).json(user);
   } catch (err) {
     next(err);
@@ -41,9 +44,8 @@ export const getUser: RequestHandler<{ id: IUser['id'] }, IUserDocument | null, 
  */
 export const createUser: RequestHandler<{}, IUserDocument, IUserInputDTO> = async (req, res, next): Promise<void> => {
   try {
-    console.log('createUser', 'req.body', req.body);
-    const user = await UserService.createUser(req.body);
-    console.log('createUser', 'user', user);
+    const { body: userInputDTO } = req;
+    const user = await UserService.createUser(userInputDTO);
     res.status(200).json(user);
   } catch (err) {
     console.log('createUser', 'error', err);
@@ -57,9 +59,11 @@ export const createUser: RequestHandler<{}, IUserDocument, IUserInputDTO> = asyn
  * @param req - The request object.
  * @param res - The response object.
  */
-export const updateUser: RequestHandler<{ id: IUser['id'] }, IUserDocument | null, IUserUpdateDTO> = async (req, res, next): Promise<void> => {
+export const updateUser: RequestHandler<{ id: IUser['_id'] }, IUserDocument | null, IUserUpdateDTO> = async (req, res, next): Promise<void> => {
   try {
-    const user = await UserService.updateUser(req.params.id, req.body);
+    const { id: userId } = req.params;
+    const { body: userUpdateDTO } = req;
+    const user = await UserService.updateUser(userId, userUpdateDTO);
     res.status(200).json(user);
   } catch (err) {
     next(err);
@@ -72,10 +76,23 @@ export const updateUser: RequestHandler<{ id: IUser['id'] }, IUserDocument | nul
  * @param req - The request object.
  * @param res - The response object.
  */
-export const deleteUser: RequestHandler<{ id: IUser['id'] }> = async (req, res, next): Promise<void> => {
+export const deleteUser: RequestHandler<{ id: IUser['_id'] }> = async (req, res, next): Promise<void> => {
   try {
-    await UserService.deleteUser(req.params.id);
+    const { id: userId } = req.params;
+    await UserService.deleteUser(userId);
     res.sendStatus(200);
+  } catch (err) {
+    next(err);
+  }
+}
+
+
+export const getMe: RequestHandler<{}, IUserDocument | null, {}, IUserQueryOptions, {user: IUserDocument}> = async (req, res, next): Promise<void> => {
+  try {
+    const { user } = res.locals;
+    const { query: options } = req;
+    const me = await UserService.findUser(user._id as string, options);
+    res.status(200).json(me);
   } catch (err) {
     next(err);
   }

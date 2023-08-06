@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 import { checkMissingEnvironmentVars, log } from "./utils";
 import { errorHandler, morganMiddleware } from "./middlewares";
 import { router } from "./routes";
@@ -42,6 +43,8 @@ app.use(express.json());
 
 // parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }));
+
+app.use(cookieParser());
 
 // Enable Cross-Site Request Forgery (CSRF) protection.
 // CSRF attacks can allow attackers to perform actions on behalf of authenticated users

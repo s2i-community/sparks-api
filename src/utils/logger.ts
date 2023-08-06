@@ -21,7 +21,7 @@ const daily = new DailyRotateFile({
  * @returns The formatted log message.
  */
 const customFormat = format.printf((info: Record<string, any>) => {
-  let message = `[${info['level'].toUpperCase()}] ${info['timestamp']} ${info['session']}: ${info['message']}`;
+  let message = `[${info['level'].toUpperCase()}] ${info['timestamp']} ${info['service']} ${info['session']}: ${info['message']}`;
 
   if (
     !(info instanceof OperationError) &&
@@ -64,7 +64,7 @@ const logger = createLogger({
     errorStackFormat(),
     format.prettyPrint(),
     format.timestamp({
-      format: "DD-MM-YYYY HH:mm:ss",
+      format: "HH:mm:ss",
     }),
     customFormat
   ),

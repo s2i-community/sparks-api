@@ -1,5 +1,5 @@
 import { Error as dbError } from "mongoose";
-
+import { OperationError } from "./operation.error";
 export * from "./operation.error";
 
 
@@ -9,6 +9,8 @@ export * from "./operation.error";
  * @returns The corresponding HTTP status code for the given error.
  */
 export function errorToRestStatus(error: Error): number {
+
+  if(error instanceof OperationError) return error.httpStatus;
 
   // 400
   if (

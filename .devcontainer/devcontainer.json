@@ -54,7 +54,8 @@
 				"wayou.vscode-todo-highlight",
 				"Gruntfuggly.todo-tree",
 				"kakumei.ts-debug",
-				"vscode-icons-team.vscode-icons"
+				"vscode-icons-team.vscode-icons",
+				"dbaeumer.vscode-eslint"
 			]
 		}
 	},

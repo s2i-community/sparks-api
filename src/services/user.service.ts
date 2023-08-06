@@ -1,6 +1,5 @@
-import { IUserDocument, UserModel } from '../database/models/user.model';
-import { IUser, IUserInputDTO, IUserQueryOptions, IUserUpdateDTO } from '../@types/user.type';
-
+import { IUserDocument, UserModel } from '../database/models/user/user.model';
+import { IUser, IUserInputDTO, IUserQueryOptions, IUserUpdateDTO } from '../@types/user';
 
 /**
  * Creates a new user.
@@ -66,7 +65,7 @@ export async function findUsers(options?: IUserQueryOptions): Promise<IUserDocum
     }
   }
 
-  return await query.exec();
+  return await query.lean();
 }
 
 
@@ -85,7 +84,7 @@ export async function findUsers(options?: IUserQueryOptions): Promise<IUserDocum
  * @example
  * const user = await User.findUser(1, { populate: [{ path: 'posts', select: 'title' }, { path: 'comments', select: 'content' }] });
  */
-export async function findUser(userId: IUser['id'], options?: IUserQueryOptions): Promise<IUserDocument | null> {
+export async function findUser(userId: IUser['_id'], options?: IUserQueryOptions): Promise<IUserDocument | null> {
   const query = UserModel.findOne({ _id: userId, deletedAt: null });
 
   if (options) {
@@ -97,7 +96,7 @@ export async function findUser(userId: IUser['id'], options?: IUserQueryOptions)
     }
   }
 
-  return await query.exec();
+  return await query.lean();
 }
 
 
@@ -120,7 +119,7 @@ export async function findUser(userId: IUser['id'], options?: IUserQueryOptions)
  * const user = await User.updateUser(1, { ... }, { populate: [{ path: 'posts', select: 'title' }, { path: 'comments', select: 'content' }] });
  * user.save();
  */
-export async function updateUser(userId: IUser['id'], userInput: IUserUpdateDTO, options?: IUserQueryOptions): Promise<IUserDocument | null> {
+export async function updateUser(userId: IUser['_id'], userInput: IUserUpdateDTO, options?: IUserQueryOptions): Promise<IUserDocument | null> {
   const query = UserModel.findByIdAndUpdate(userId, userInput, { new: true });
 
   if (options) {
@@ -132,7 +131,7 @@ export async function updateUser(userId: IUser['id'], userInput: IUserUpdateDTO,
     }
   }
 
-  return await query.exec();
+  return await query.lean();
 }
 
 
@@ -148,7 +147,7 @@ export async function updateUser(userId: IUser['id'], userInput: IUserUpdateDTO,
  * const user = await User.deleteUser(1, { select: 'username' });
  * user.save();
  */
-export async function deleteUser(userId: IUser['id'], options?: IUserQueryOptions): Promise<IUserDocument | null> {
+export async function deleteUser(userId: IUser['_id'], options?: IUserQueryOptions): Promise<IUserDocument | null> {
   const query = UserModel.findByIdAndUpdate(userId, { deletedAt: new Date() }, { new: true });
 
   if (options) {
