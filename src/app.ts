@@ -8,7 +8,7 @@ import { errorHandler, morganMiddleware } from "./middlewares";
 import { router } from "./routes";
 import { connectDB } from "./database/services";
 import { startServer } from "./services";
-import { swaggerSpecs } from "./utils/swagger";
+import * as swaggerDocument from './configs/swagger/main.json';
 
 dotenv.config({ path: `.env.${process.env['NODE_ENV']}` });
 
@@ -61,7 +61,7 @@ app.use(cookieParser());
 // load router
 app.use('/', router);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // error handler middleware
 app.use(errorHandler);

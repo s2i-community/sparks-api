@@ -1,0 +1,83 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Nome dell'API",
+        "description": "Descrizione dell'API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/api/v1",
+            "description": "Server locale con revers-proxy"
+        },
+        {
+            "url": "https://localhost:9000/api/v1",
+            "description": "Server locale"
+        }
+    ],
+    "paths": {
+        "/users": {
+            "get": {
+                "summary": "Breve descrizione dell'endpoint",
+                "description": "Descrizione più dettagliata dell'endpoint",
+                "parameters": [
+                    {
+                        "name": "parametro1",
+                        "in": "query",
+                        "description": "Descrizione del parametro 1",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "parametro2",
+                        "in": "query",
+                        "description": "Descrizione del parametro 2",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Risposta di successo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "risultato": {
+                                            "type": "string"
+                                        },
+                                        "dati": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "format": "int32"
+                                                    },
+                                                    "nome": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Richiesta non valida"
+                    },
+                    "500": {
+                        "description": "Errore interno del server"
+                    }
+                }
+            }
+        }
+    }
+}
