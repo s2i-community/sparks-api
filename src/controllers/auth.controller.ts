@@ -26,7 +26,7 @@ export const signIn: RequestHandler<{}, IDefaultResponseBody, IAuthInputDTO> = a
     res.cookie('jwt', jwtToken, {
       httpOnly: true,
       secure: process.env['NODE_ENV'] === 'production',
-      maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+      maxAge: Number(process.env['COOKIE_MAX_AGE'])
     });
     res.json({ message: 'Successfully signed in' });
   } catch (err: any) {
