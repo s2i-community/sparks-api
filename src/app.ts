@@ -30,6 +30,7 @@ if (missingEnvVars) {
 const PORT = parseInt(process.env["PORT"]!) || 9000;
 /** The MongoDB URI to connect to. */
 const mongoDbURI = process.env["MONGO_URI"]!;
+const baseDbName = process.env["MONGO_DB_BASE_NAME"]!;
 
 /** The Express application instance. */
 const app: Application = express();
@@ -71,7 +72,7 @@ app.use(errorHandler);
 
 
 // Connect to the database and start the server.
-connectDB(mongoDbURI)
+connectDB(`${mongoDbURI}/${baseDbName}`)
   .then(() => startServer(app, PORT))
   .catch((err: Error) => {
     log.error(err);

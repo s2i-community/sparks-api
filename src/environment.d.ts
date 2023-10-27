@@ -6,5 +6,6 @@ declare namespace NodeJS {
     JWT_SECRET: string;
     COOKIE_MAX_AGE: string;
     BASE_URL: string;
+    MONGO_DB_BASE_NAME: string;
   }
 }
